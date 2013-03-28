@@ -29,8 +29,26 @@ describe "User pages" do
         end
       end
     end
-  end
 
+    describe "delete links" do
+
+      it { should_not have_link('delete') }
+
+      describe "as an admin user" do
+        let(:admin) { FactoryGirl.create(:admin) }
+        before do
+          valid_signin admin
+          visit users_path
+        end
+
+        it { should have_link('delete', href: user_path(User.first)) }
+        it "should be able to delete another user" do
+          expect { click_link('delete') }.to change(User, :count).by(-1)
+        end
+        it { should_not have_link('delete', href: user_path(admin)) }
+      end
+    end
+  end
   describe "signup" do
 
     before { visit signup_path }
@@ -117,19 +135,6 @@ describe "User pages" do
 	  it { should have_selector('title', text: user.name) }
   end
 
-  it { should respond_to(:admin) }
-  it { should respond_to(:authenticate) }
-
-  it { should be_valid }
-  it { should_not be_admin }
-
-  describe "with admin attribute set to 'true'" do
-    before do
-      @user.save!
-      @user.toggle!(:admin)
-    end
-
-    it { should be_admin }
-  end
+  
 
 end
