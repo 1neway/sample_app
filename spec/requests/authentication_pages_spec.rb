@@ -48,6 +48,16 @@ describe "Authentication" do
         before { click_link "Sign out" }
         it { should have_link('Sign in') }
       end
+    
+      describe "submitting to the create action" do
+        before { post users_path }
+        specify { response.should redirect_to(root_path) }
+      end
+
+      describe "submitting to the new action" do
+        before { get new_user_path }
+        specify { response.should redirect_to(root_path) }
+      end
     end
   end
 
@@ -155,6 +165,7 @@ describe "Authentication" do
         specify { response.should redirect_to(root_path) }
       end
     end
+  
   describe "as non-admin user" do
       let(:user) { FactoryGirl.create(:user) }
       let(:non_admin) { FactoryGirl.create(:user) }
